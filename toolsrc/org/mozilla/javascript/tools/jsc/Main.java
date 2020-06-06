@@ -32,7 +32,7 @@ public class Main {
      */
     public static void main(String args[])
     {
-        args=new String[]{"-encoding", "UTF-8","E:/Work/GitHub/batchJs2Dex/other/aaa.js"};
+       // args=new String[]{"-encoding", "UTF-8","E:/Work/GitHub/batchJs2Dex/other/aaa.js"};
 
         Console.log(args);
         Main main = new Main();

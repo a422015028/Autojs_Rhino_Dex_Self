@@ -47,23 +47,35 @@ class Main
 		toClassFile(FileUtil.readUtf8String(filePath));
 	}
 
+	//文件操作的 根路径
 	public static String BASE_DIR_PATH = "E:\\Desktop\\RhinoScript\\" + getTimeString() + "\\";
 
+	/**
+	 * 获取时间 字符串
+	 * @return
+	 */
 	public static String getTimeString()
 	{
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String time = formatter.format(date);
-		return time;
+		return formatter.format(date);
 	}
 
-	//这里注意传参是 js字符串，不是js路径
+	//这里注意传参是 js 文本数据，不是js路径
 	static void toClassFile(String script) throws Exception
 	{
-		//创建编译环境
+		//创建Rhino编译环境 相关参数..  (里面修改了  generatingSource 的默认值 为 false
 		CompilerEnvirons compilerEnv = new CompilerEnvirons();
 		ClassCompiler compiler = new ClassCompiler(compilerEnv);
-		//compileToClassFiles的第3个参数比较重要，它表明了js转成.class的类路径，影响到调用的方法
+
+		//compileToClassFiles的第4个参数比较重要，它表明了js转成.class的类路径，影响到  在autojs调用的方法
+		// 不填写包名 则 默认在 defpackage 中
+
+		// auto js调用例子 (如果autojs闪退.就是抛出了异常.请使用开源的autojs 代码, 使用 AdnroidStudio 进行调试,查看异常)
+		//	   var localDexPath= "/sdcard/代码侠辅助Pro/aaa.dex"
+		//     runtime.loadDex(localDexPath);
+		//     new Packages["aaa"]()();
+		//
 		Object[] compiled = compiler.compileToClassFiles(
 				script,
 				null,
@@ -75,15 +87,18 @@ class Main
 			//String className = (String) compiled[j];
 
 			JavaStringCompiler compiler2 = new JavaStringCompiler();
+
+			// 字符串 转为 java  class 文件
 			Map<String, byte[]> results = compiler2.compile("StrUtils.java", JAVA_SOURCE_CODE);
 
 			Console.log(results);
-			//解密帮助类的数据
+
+			//解密工具类的 数据
 			byte[] utilsBytes = results.get("defpackage.StrUtils");
 
 			String utilsClassPath = BASE_DIR_PATH + "defpackage//StrUtils.class";
 			File utilsFile = new File(utilsClassPath);
-			utilsFile.getParentFile().mkdirs();
+			utilsFile.getParentFile().mkdirs(); //创建文件夹
 
 			try (FileOutputStream fos = new FileOutputStream(utilsFile))
 			{
@@ -100,13 +115,14 @@ class Main
 				e.printStackTrace();
 			}
 
-
+			//------------
 			String classPath = BASE_DIR_PATH + "aaa.class";
 
-			//js 转为java 后的 数据
+			//js 转为 class
 			byte[] bytes = (byte[]) compiled[(j + 1)];
 			File file = new File(classPath);
-			file.getParentFile().mkdirs();
+			file.getParentFile().mkdirs(); //创建文件夹
+
 			try (FileOutputStream fos = new FileOutputStream(file))
 			{
 				fos.write(bytes);
@@ -122,27 +138,26 @@ class Main
 				e.printStackTrace();
 			}
 
+			//将两个class 打包为 一个jar
 			cmdExec("jar cvf demo.jar *");
 
 			System.out.println(utilsFile.exists());
-			String aaa = "java -jar E:\\Software\\androidstudioSDK\\build-tools\\29.0.3\\lib\\dx.jar --dex " +
-					"--output=aaa.dex " +
-					"demo.jar";
+			System.out.println("开始转dex,js代码越多,耗时越长,请耐心等待");
+			//将 jar 转为 dex
+			cmdExec("java -jar E:\\Software\\androidstudioSDK\\build-tools\\29.0.3\\lib\\dx.jar --dex " +
+							"--output=aaa.dex " +
+							"demo.jar");
 
-			cmdExec(aaa);
+			System.out.println("转dex 结束");
 
 		}
-		System.out.println("编译成功！");
+		System.out.println("编译成功！dex文件保存位置: "+BASE_DIR_PATH);
 	}
 
-	public static byte[] byteMerger(byte[] bt1, byte[] bt2)
-	{
-		byte[] bt3 = new byte[bt1.length + bt2.length];
-		System.arraycopy(bt1, 0, bt3, 0, bt1.length);
-		System.arraycopy(bt2, 0, bt3, bt1.length, bt2.length);
-		return bt3;
-	}
-
+	/**
+	 * 执行cmd命令
+	 * @param cmd
+	 */
 	public static void cmdExec(String cmd)
 	{
 

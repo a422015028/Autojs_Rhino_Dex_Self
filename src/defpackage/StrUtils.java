@@ -49,7 +49,7 @@ public class StrUtils
 	}
 
 	/**
-	 * 加密，把一个字符串在原有的基础上+1
+	 * 加密，把一个字符串在原有的基础上 加一个数值
 	 *
 	 * @param data 需要解密的原字符串
 	 * @return 返回解密后的新字符串
@@ -62,13 +62,13 @@ public class StrUtils
 		//遍历
 		for (int i = 0; i < b.length; i++)
 		{
-			b[i] += 3;//在原有的基础上+1
+			b[i] += 3;//在原有的基础上 加一个数值
 		}
 		return new String(b);
 	}
 
 	/**
-	 * 解密：把一个加密后的字符串在原有基础上-1
+	 * 解密：把一个加密后的字符串在原有基础上 减一个数
 	 *
 	 * @param data 加密后的字符串
 	 * @return 返回解密后的新字符串
@@ -81,7 +81,7 @@ public class StrUtils
 		//遍历
 		for (int i = 0; i < b.length; i++)
 		{
-			b[i] -= 3;//在原有的基础上-1
+			b[i] -= 3;//在原有的基础上 减一个数
 		}
 		return new String(b);
 	}
@@ -95,10 +95,9 @@ public class StrUtils
 	public static void strE(ClassFileWriter cfw, String content)
 	{
 		//System.out.println(content);
-
 		if (content.isEmpty())
 		{
-			//为空 则 不调用 解密.. 较少不必要的性能消耗
+			//为空 则 不调用 解密..
 			cfw.addPush(content);
 		}
 		else

@@ -46,7 +46,7 @@ Rhino 命令行 类
 
 
 
-现在的版本只支持  执行 Main.java 来 转 dex . 
+现在的版本只支持  执行 mycode/main.java 来 转 dex . 
 
 有兴趣的大佬可以 自己实现一下 jar命令行 转 dex
 

@@ -1,101 +1,220 @@
-# Rhino: JavaScript in Java
+# 魔改 Rhino 1772   
+
+# QQ: 1659809758
 
 ![Rhino](https://developer.mozilla.org/@api/deki/files/832/=Rhino.jpg)
 
-Rhino is an implementation of JavaScript in Java.
 
-## License
 
-Rhino is licensed under the [MPL 2.0](./LICENSE.txt).
+## 必要的 环境
 
-## Releases
+1. java
+2. gradle
+3. android 的 dx.jar
 
-<table>
-<tr><td><a href="https://github.com/mozilla/rhino/releases/tag/Rhino1_7R5_RELEASE">Rhino 1.7R5</a></td><td>January 29, 2015</td></tr>
-<tr><td><a href="https://github.com/mozilla/rhino/releases/tag/Rhino1_7_6_RELEASE">Rhino 1.7.6</a></td><td>April 15, 2015</td></tr>
-<tr><td><a href="https://github.com/mozilla/rhino/releases/tag/Rhino1_7_7_RELEASE">Rhino 1.7.7</a></td><td>June 17, 2015</td></tr>
-<tr><td><a href="https://github.com/mozilla/rhino/releases/tag/Rhino1_7_7_1_RELEASE">Rhino 1.7.7.1</a></td><td>February 2, 2016</td></tr>
-<tr><td><a href="https://github.com/mozilla/rhino/releases/tag/Rhino1_7_7_2_RELEASE">Rhino 1.7.7.2</a></td><td>August 24, 2017</td></tr>
-</table>
+## autojs  js脚本 转 dex
 
-[Release Notes](./RELEASE-NOTES.md) for recent releases.
+## 修改内容
 
-[Compatability table](http://mozilla.github.io/rhino/compat/engines.html) which shows which advanced JavaScript
-features from ES5, 6, and 7 are implemented in Rhino.
+ 去除源码字符串
 
-## Documentation
+ 加密所有字符串
 
-Information for script builders and embedders:
+---
 
-[https://developer.mozilla.org/en-US/docs/Rhino_documentation](https://developer.mozilla.org/en-US/docs/Rhino_documentation)
+加密入口类
 
-JavaDoc for all the APIs:
+> src/org/mozilla/mycode/main.java
 
-[http://mozilla.github.io/rhino/javadoc/index.html](http://mozilla.github.io/rhino/javadoc/index.html)
 
-More resources if you get stuck:
 
-[https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Community](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Community)
+js 转 class 具体实现类. 调用 自定义加密类 .实现 字符串的加密
 
-## Building
+> src/org/mozilla/javascript/optimizer/Codegen.java
 
-### How to Build
 
-Rhino builds with `Gradle`. Here are some useful tasks:
-```
-./gradlew jar
-```
-Build and create `Rhino` jar in the `build/libs` directory.
-```
-./gradlew test
-```
-Build and run all the tests.
-```
-./gradlew testBenchmark
-```
-Build and run benchmark tests.
 
-## Releasing and publishing new version
+ 自定义的  加密 类
 
-1. Ensure all tests are passing
-2. Remove `-SNAPSHOT` from version in `gradle.properties` in project root folder
-3. Create file `gradle.properties` in `$HOME/.gradle` folder with following properties. Populate them with maven repo credentials and repo location.
-```
-mavenUser=
-mavenPassword=
-mavenSnapshotRepo=
-mavenReleaseRepo=
-```
+> src/defpackage/StrUtils.java
 
-4. Run `Gradle` task to publish artifacts to Maven Central.
-```
-./gradlew publish
-```
-5. Increase version and add `-SNAPSHOT` to it in `gradle.properties` in project root folder.
-6. Push `gradle.properties` to `GitHub`
+
+
+Rhino 命令行 类
+
+> toolsrc/org/mozilla/javascript/tools/jsc/Main.java
+
+
+
+现在的版本只支持  执行 Main.java 来 转 dex . 
+
+有兴趣的大佬可以 自己实现一下 jar命令行 转 dex
+
+
+
+## autojs 热更新dex 例子
+
+提示: 
+
+新功能 未生效 ,  是 dex 缓存问题 ,
+
+重启下手机设备 或者 清除 该 app 的 所有数据.  
+
+重新打开app 即可
+
+```javascript
+
+"ui";
+
+var DexName = "aaa.dex";
+var DexVersionName = "DexVersion.js";
+//本地文件
+var LocalDirPath = "/sdcard/代码侠辅助/";
+var LocalDexPath = LocalDirPath + DexName;
+var LocalVersionFilePath = LocalDirPath + DexVersionName;
+
+//网络文件
+var RemoteHost = "http://自己的地址/";
+var RemoteDexFilePath = RemoteHost + DexName;
+var RemoteVersionFilePath = RemoteHost + DexVersionName;
+
+
+var Header = {
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3754.400 QQBrowser/10.5.4034.400 ",
+  },
+};
+/**
+ * 开始运行
+ */
+function Run() {
+  try {
+    var checkState = false;
+
+    //更新
+    threads
+      .start(function () {
+        checkState = CheckVersion();
+      })
+      .join();
+
+    if (checkState) {
+      //加载dex并运行
+      runtime.loadDex(LocalDexPath);
+      new Packages["aaa"]()();
+    }
+  } catch (error) {
+    toast("检查更新状态失败\n" + error);
+    console.warn("Run Error: " + error);
+  }
+}
+
+/**
+ * 检查版本
+ */
+function CheckVersion() {
+  var res = true;
+  try {
+    if (!files.exists(LocalVersionFilePath)) {
+      console.log("创建版本文件");
+      files.createWithDirs(LocalVersionFilePath);
+      /** 默认值 */
+      files.write(LocalVersionFilePath, "0.0.0");
+    }
+
+    var localVersion = files.read(LocalVersionFilePath);
+    var remoteVersion = http.get(RemoteVersionFilePath,Header).body.string();
+
+    if (localVersion != remoteVersion || !files.exists(LocalDexPath)) {
+      console.warn("本地版本: " + localVersion);
+      console.warn("远程版本: " + remoteVersion);
+      if (DownloadDex()) {
+        files.write(LocalVersionFilePath, remoteVersion);
+      } else {
+        //res = false;
+      }
+    } else {
+      toast("最新版,无需更新");
+    }
+  } catch (error) {
+    console.warn("CheckVersion Error: " + error);
+    toast("检查版本发生异常\n" + error);
+    //OpenLog();
+  }
+  return res;
+}
+
+/**
+ * 下载Dex
+ */
+function DownloadDex() {
+  var res = false;
+  try {
+    console.warn("dex开始更新");
+    var res = http.get(RemoteDexFilePath,Header);
+    if (Http200(res)) {
+      files.writeBytes(LocalDexPath, res.body.bytes());
+      if (files.exists(LocalDexPath)) {
+        console.warn("dex更新成功");
+        toast("更新成功");
+        res = true;
+      }
+    } else {
+      console.warn("DownloadDex 下载失败:  " + res);
+      toast("DownloadDex 下载失败:  " + res);
+      OpenLog();
+      threads.shutDownAll();
+      sleep(99999);
+    }   
+  } catch (error) {
+    console.warn("DownloadDex Error: " + error);
+    toast("下载新的dex 异常.\n" + error);
+   // OpenLog();
+  }
+
+  return res;
+}
+
+/**
+ * 判断是否 不是 空
+ * @param {any}} content 内容
+ */
+function IsNotNullOrEmpty(content) {
+  return content != null && content != undefined && Trim(content).length > 0;
+}
+
+/**
+ * http200验证
+ * @param {object} content http返回的json
+ */
+function Http200(content) {
+  return (
+    IsNotNullOrEmpty(content) &&
+    (content.statusCode == 200 || content.statusCode == "200")
+  );
+}
+
+/**
+ * 去除左右空格
+ * @param {string} content
+ */
+function Trim(content) {
+  return (content + "").replace(/(^\s*)|(\s*$)/g, "");
+}
+
+function OpenLog() {
+  ui.run(function () {
+    // app.startActivity("console");
    
-## Running
+  });
+}
 
-Rhino can run as a stand-alone interpreter from the command line:
+Run();
+
 ```
-java -jar buildGradle/libs/rhino-1.7.7.2.jar
-Rhino 1.7.7.2 2017 08 24
-js> print('Hello, World!');
-Hello, World!
-js>
-```
-You can also embed it, as most people do. See below for more docs.
 
-## Issues
 
-Most issues are managed on GitHub:
 
-[https://github.com/mozilla/rhino/issues](https://github.com/mozilla/rhino/issues)
-
-## More Help
-
-The Google group is the best place to go with questions:
-
-[https://groups.google.com/forum/#!forum/mozilla-rhino](https://groups.google.com/forum/#!forum/mozilla-rhino)
 
 

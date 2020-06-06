@@ -1,0 +1,94 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+js> defpackage = RegExp('')
+/(?:)/
+js> defpackage.source
+
+js> RegExp('a').source
+a
+js> RegExp('\\\\').source
+\\
+js> RegExp('\\\\\\\\').source
+\\\\
+js> defpackage = RegExp('/')
+/\//
+js> defpackage.source
+\/
+js> defpackage.test('/')
+true
+js> defpackage = RegExp('//')
+/\/\//
+js> defpackage.source
+\/\/
+js> defpackage.test('//')
+true
+js> defpackage = RegExp('\/')
+/\//
+js> defpackage.source
+\/
+js> defpackage.test('/')
+true
+js> defpackage = RegExp('\\/')
+/\//
+js> defpackage.source
+\/
+js> defpackage.test('/')
+true
+js> defpackage = RegExp('\\\/')
+/\//
+js> defpackage.source
+\/
+js> defpackage.test('/')
+true
+js> defpackage = RegExp('\\\\/')
+/\\//
+js> defpackage.source
+\\/
+js> defpackage.test('/')
+false
+js> defpackage.test('\\/')
+true
+js> defpackage = RegExp('/abc\/foo\\/bar\\\/xyz/')
+/\/abc\/foo\/bar\/xyz\//
+js> defpackage.source
+\/abc\/foo\/bar\/xyz\/
+js> defpackage.test('/abc/foo/bar/xyz/')
+true
+js> RegExp('[^/]*')
+/[^\/]*/
+js> RegExp('[^\/]*')
+/[^\/]*/
+js> RegExp('[^\\/]*')
+/[^\/]*/
+
+js> /./.compile('')
+/(?:)/
+js> /./.compile('a')
+/a/
+js> /./.compile('\\\\')
+/\\/
+js> /./.compile('\\\\\\\\')
+/\\\\/
+js> /./.compile('/')
+/\//
+js> /./.compile('//')
+/\/\//
+js> /./.compile('\/')
+/\//
+js> /./.compile('\\/')
+/\//
+js> /./.compile('\\\/')
+/\//
+js> /./.compile('\\\\/')
+/\\//
+js> /./.compile('/abc\/foo\\/bar\\\/xyz/')
+/\/abc\/foo\/bar\/xyz\//
+js> /./.compile('[^/]*')
+/[^\/]*/
+js> /./.compile('[^\/]*')
+/[^\/]*/
+js> /./.compile('[^\\/]*')
+/[^\/]*/
+

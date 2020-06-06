@@ -1,0 +1,73 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+// test various array methods with dense arrays
+js> var defpackage = []
+
+js> defpackage[10] = 1
+1
+js> defpackage.length
+11
+js> 0 in defpackage
+false
+js> defpackage.shift()
+js> defpackage.length
+10
+js> 0 in defpackage
+false
+js> defpackage
+,,,,,,,,,1
+js> defpackage.reverse()
+1,,,,,,,,,
+js> defpackage.length
+10
+js> 9 in defpackage
+false
+js> defpackage.reverse()
+,,,,,,,,,1
+js> defpackage.length
+10
+js> 5 in defpackage
+false
+js> defpackage.unshift(2)
+11
+js> defpackage
+2,,,,,,,,,,1
+js> 9 in defpackage
+false
+js> var r = defpackage.splice(3, 4, 3, 4, 5)
+js> r
+,,,
+js> r.length
+4
+js> 2 in r
+false
+js> defpackage.length
+10
+js> defpackage
+2,,,3,4,5,,,,1
+js> defpackage[5]
+5
+js> 8 in defpackage
+false
+js> var s = defpackage.slice(6, 8);
+js> s
+,
+js> s.length
+2
+js> 1 in s
+false
+js> var y = []
+js> y[9] = 1
+1
+js> var z = y.concat(defpackage)
+js> z
+,,,,,,,,,1,2,,,3,4,5,,,,1
+js> z.length
+20
+js> 2 in z
+false
+js> 12 in z
+false
+

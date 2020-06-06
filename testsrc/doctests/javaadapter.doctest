@@ -1,0 +1,87 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+js> var defpackage = new JavaAdapter(java.util.HashMap, {})
+js> defpackage
+{}
+js> defpackage instanceof java.util.HashMap
+true
+js> defpackage instanceof java.util.Map
+true
+js> defpackage.put("foo", "bar")
+null
+js> defpackage
+{foo=bar}
+js> defpackage.get("foo")
+bar
+js> defpackage = new JavaAdapter(java.util.HashMap, {}, {a: "b"})
+{a=b}
+js> defpackage.get("a")
+b
+js> defpackage.remove("a")
+b
+js> defpackage
+{}
+js> defpackage.get("a")
+null
+js> defpackage = new JavaAdapter(java.util.HashMap, {get: function(key) {return 2 + this.super$get(key)}})
+{}
+js> defpackage.put("foo", "bar")
+null
+js> defpackage.get("foo")
+2bar
+js> defpackage.get("bar")
+2.0
+js> defpackage = new JavaAdapter({}); defpackage.class.superclass
+class java.lang.Object
+js> defpackage.class.interfaces.length
+0
+js> var Appendable = java.lang.Appendable
+js> var Runnable = java.lang.Runnable
+js> function append() {return this}
+js> function run() {return "done"}
+js> var defpackage = new JavaAdapter(Runnable, Appendable, {run: run, append: append})
+js> defpackage instanceof Appendable
+true
+js> defpackage instanceof Runnable
+true
+js> defpackage.append("foo") === defpackage
+true
+js> defpackage.run()
+js> // test access to protected methods
+js> defpackage = JavaAdapter(java.util.Hashtable, {test: function() {this.rehash();}});
+{}
+js> defpackage.test()
+js> // test access to protected fields
+js> defpackage = JavaAdapter(java.util.Vector, {test: function() {return this.elementCount;}});
+[]
+js> defpackage.test()
+0
+js> defpackage.add(1)
+true
+js> defpackage.test()
+1
+js> // test non-empty constructor with protected field
+js> defpackage = JavaAdapter(java.util.Vector, {test: function() {return this.elementData.length;}}, 20);
+[]
+js> defpackage.test()
+20
+js> // test extending abstract base class
+js> defpackage = new java.util.AbstractList({get: function(i) { return i + 1; }})
+[]
+js> defpackage.get(0)
+1.0
+js> defpackage.get(1)
+2.0
+js> defpackage.get(2)
+3.0
+js> // test implementing an interface
+js> defpackage = new java.util.List({get: function(i) { return i + 1; }, toString: function() { return "[]"; }})
+[]
+js> defpackage.get(0)
+1.0
+js> defpackage.get(1)
+2.0
+js> defpackage.get(2)
+3.0

@@ -1,0 +1,16 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+// Test for using keywords as identifiers
+// https://bugzilla.mozilla.org/show_bug.cgi?id=423557
+js> var defpackage = {if: 1}
+js> defpackage.if
+1
+js> defpackage.function = 3
+3
+js> defpackage.if + defpackage.function
+4
+js> delete defpackage.if
+true
+js> defpackage.if

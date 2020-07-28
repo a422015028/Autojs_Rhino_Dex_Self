@@ -2,15 +2,14 @@
 
 # QQ: 1659809758
 
-![Rhino](https://developer.mozilla.org/@api/deki/files/832/=Rhino.jpg)
-
 
 
 ## 必要的 环境
 
-1. java
-2. gradle
-3. android 的 dx.jar
+1. IDEA
+2. Java
+3. Gradle
+4. Android 的 dx.jar
 
 ## autojs  js脚本 转 dex
 
@@ -24,25 +23,25 @@
 
 加密入口类
 
-> src/org/mozilla/mycode/main.java
+> [mycode/main.java](https://github.com/xxxxue/Autojs_Rhino_Dex_Self/blob/master/src/org/mozilla/mycode/main.java)
 
 
 
 js 转 class 具体实现类. 调用 自定义加密类 .实现 字符串的加密
 
-> src/org/mozilla/javascript/optimizer/Codegen.java
+> [optimizer/Codegen.java](https://github.com/xxxxue/Autojs_Rhino_Dex_Self/blob/master/src/org/mozilla/javascript/optimizer/Codegen.java)
 
 
 
  自定义的  加密 类
 
-> src/defpackage/StrUtils.java
+> [defpackage/StrUtils.java](https://github.com/xxxxue/Autojs_Rhino_Dex_Self/blob/master/src/defpackage/StrUtils.java)
 
 
 
 Rhino 命令行 类
 
-> toolsrc/org/mozilla/javascript/tools/jsc/Main.java
+> [jsc/Main.java](https://github.com/xxxxue/Autojs_Rhino_Dex_Self/blob/master/toolsrc/org/mozilla/javascript/tools/jsc/Main.java)
 
 
 

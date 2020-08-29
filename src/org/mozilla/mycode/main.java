@@ -2,6 +2,7 @@ package org.mozilla.mycode;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
+import cn.hutool.core.util.CharsetUtil;
 import com.itranswarp.compiler.JavaStringCompiler;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
@@ -53,6 +54,7 @@ class Main
 
 	/**
 	 * 获取时间 字符串
+	 *
 	 * @return
 	 */
 
@@ -66,10 +68,11 @@ class Main
 	//这里注意传参是 js 文本数据，不是js路径
 	static void toClassFile(String script) throws Exception
 	{
-		//创建Rhino编译环境 相关参数..  (里面修改了  generatingSource 的默认值 为 false
+		//创建Rhino编译环境 相关参数..
 		CompilerEnvirons compilerEnv = new CompilerEnvirons();
+		compilerEnv.setGeneratingSource(false); //编译后,不添加js源码
 		compilerEnv.setLanguageVersion(Context.VERSION_ES6); //设置 支持es6
-
+		compilerEnv.setOptimizationLevel(0);
 		ClassCompiler compiler = new ClassCompiler(compilerEnv);
 
 		//compileToClassFiles的第4个参数比较重要，它表明了js转成.class的类路径，影响到  在autojs调用的方法
@@ -151,15 +154,19 @@ class Main
 			cmdExec("java -jar E:\\Software\\androidstudioSDK\\build-tools\\29.0.3\\lib\\dx.jar --dex " +
 							"--output=aaa.dex " +
 							"demo.jar");
-
-			System.out.println("转dex 结束");
+			System.out.println();
+			System.out.println();
+			System.out.println("===================================");
+			System.out.println("❤❤❤❤  js转dex 结束");
 
 		}
-		System.out.println("编译成功！dex文件保存位置: "+BASE_DIR_PATH);
+		System.out.println("❤❤❤❤  编译成功！dex文件保存位置: " + BASE_DIR_PATH);
+		System.out.println("===================================");
 	}
 
 	/**
 	 * 执行cmd命令
+	 *
 	 * @param cmd
 	 */
 	public static void cmdExec(String cmd)
@@ -205,7 +212,7 @@ class Main
 			{
 				while ((num = ins.read(b)) != -1)
 				{
-					System.out.println(new String(b, "gb2312"));
+					System.out.println(new String(b, CharsetUtil.CHARSET_GBK));
 				}
 			}
 			catch (IOException e)

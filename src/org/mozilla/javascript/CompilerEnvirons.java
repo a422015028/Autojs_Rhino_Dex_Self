@@ -15,7 +15,7 @@ public class CompilerEnvirons
     public CompilerEnvirons()
     {
         errorReporter = DefaultErrorReporter.instance;
-        languageVersion = Context.VERSION_DEFAULT;
+        languageVersion = Context.VERSION_ES6; //改为 默认ES6
         generateDebugInfo = true;
         reservedKeywordAsIdentifier = true;
         allowMemberExprAsFunctionName = false;

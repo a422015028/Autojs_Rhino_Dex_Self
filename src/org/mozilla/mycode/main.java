@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
 import com.itranswarp.compiler.JavaStringCompiler;
 import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.optimizer.ClassCompiler;
 
 import java.io.BufferedReader;
@@ -54,6 +55,7 @@ class Main
 	 * 获取时间 字符串
 	 * @return
 	 */
+
 	public static String getTimeString()
 	{
 		Date date = new Date();
@@ -66,6 +68,8 @@ class Main
 	{
 		//创建Rhino编译环境 相关参数..  (里面修改了  generatingSource 的默认值 为 false
 		CompilerEnvirons compilerEnv = new CompilerEnvirons();
+		compilerEnv.setLanguageVersion(Context.VERSION_ES6); //设置 支持es6
+
 		ClassCompiler compiler = new ClassCompiler(compilerEnv);
 
 		//compileToClassFiles的第4个参数比较重要，它表明了js转成.class的类路径，影响到  在autojs调用的方法

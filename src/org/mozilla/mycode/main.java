@@ -72,7 +72,7 @@ class Main
 		CompilerEnvirons compilerEnv = new CompilerEnvirons();
 		compilerEnv.setGeneratingSource(false); //编译后,不添加js源码
 		compilerEnv.setLanguageVersion(Context.VERSION_ES6); //设置 支持es6
-		compilerEnv.setOptimizationLevel(0);
+		compilerEnv.setOptimizationLevel(9); //  优化等级改为 9 级.    如果有问题 就改成0
 		ClassCompiler compiler = new ClassCompiler(compilerEnv);
 
 		//compileToClassFiles的第4个参数比较重要，它表明了js转成.class的类路径，影响到  在autojs调用的方法

@@ -49,9 +49,23 @@ Rhino 命令行 类
 
 有兴趣的大佬可以 自己实现一下 jar命令行 转 dex
 
+## 赞赏
 
+如果这个开源项目 可以帮助到你,  你也可以请作者喝一杯咖啡。
+
+
+
+![](http://xxxxue.gitee.io/important/aliPay.png)
+
+![](http://xxxxue.gitee.io/important/wxPay.png)
 
 ## autojs 热更新dex 例子
+
+## 小提示:
+
+转dex之前,先到 js 混淆网站里把  js中的 所有的变量 和 方法名 全部重命名
+
+将混淆后的js 再转 dex ,更加安全..
 
 ## 缓存问题
 
@@ -77,7 +91,7 @@ Rhino 命令行 类
 var DexName = "aaa.dex";
 var DexVersionName = "DexVersion.js";
 //本地文件
-var LocalDirPath = "/sdcard/代码侠辅助/";
+var LocalDirPath = "/sdcard/xxx辅助/";
 var LocalDexPath = LocalDirPath + DexName;
 var LocalVersionFilePath = LocalDirPath + DexVersionName;
 
